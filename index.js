@@ -11,7 +11,7 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// app.use('/urlapi',shortURL);
+app.use('/urlapi',shortURL);
 app.use('/',homeRoutes);
 
 app.listen(PORT, () => {
