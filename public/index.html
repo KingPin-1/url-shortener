@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/style.css" />
+        <title>Url Shortener</title>
+    </head>
+    <body>
+        <main>
+            <section class="form-section text-center mb-5">
+                <h1 class="page-title">URL Shortener</h1>
+                <form class="url-form">
+                    <input
+                        type="url"
+                        class="url-input"
+                        placeholder="Paste a link here to shorten it!"
+                        required
+                        name="url"
+                        autofocus
+                    />
+                    <button type="submit" class="submit-button">
+                        Shrink URL
+                    </button>
+                </form>
+            </section>
+            <section class="result-section text-center"></section>
+        </main>
+
+        <script>
+            const form = document.querySelector(".url-form");
+            const result = document.querySelector(".result-section");
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
+                const input = document.querySelector(".url-input");
+                fetch("/urlapi", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        longURL: input.value,
+                    }),
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw Error(response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        console.log(data.shortURL);
+                        result.insertAdjacentHTML(
+                            "afterbegin",
+                            `
+                        <div class="result">
+                            <a target="_blank" href="${data.shortURL}" class="short-url">${data.shortURL}</a>
+                        </div>`
+                        );
+                    })
+                    .catch(console.error);
+            });
+        </script>
+    </body>
+</html>
